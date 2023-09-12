@@ -53,7 +53,7 @@ bot.telegram.sendMessage(CHAT_ID, "Checking for xqc live status")
 process.on('SIGINT', () => {
   console.log('Received SIGINT. Gracefully shutting down...');
   // Add your cleanup logic here, e.g., closing database connections, saving data, etc.
-  
+  bot.stop("SIGINT")
   // Then exit the process
   process.exit(0);
 });
