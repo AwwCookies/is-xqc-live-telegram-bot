@@ -7,5 +7,4 @@ export default async function checkIfLive(username: string) {
   catch (error) {
     console.log("Error occurred:", error);
   }
-
 }

@@ -1,7 +1,8 @@
 import { exit } from "process"
-import { Telegraf, Input } from "telegraf"
-
+import { Telegraf } from "telegraf"
 import checkIfLive from "./checkIfLive"
+
+const twilio = require('twilio')(Bun.env.TWILIO_SID, Bun.env.TWILIO_TOKEN)
 
 // Ensure env vars are set
 if (!Bun.env.BOT_TOKEN || !Bun.env.CHAT_ID) {
@@ -31,6 +32,14 @@ async function check() {
   if (currentlyLive && !markedLive) {
     markedLive = true
     bot.telegram.sendMessage(CHAT_ID, "xqc is live!")
+    // send text message
+    twilio.messages.create({
+      body: "xqc is live",
+      from: Bun.env.TWILIO_PHONE,
+      to: Bun.env.CONTACT_PHONE
+    }).then(() => {
+      console.log(`Text message sent`)
+    })
   }
 
   if (markedLive && !currentlyLive) {
@@ -52,8 +61,10 @@ bot.telegram.sendMessage(CHAT_ID, "Checking for xqc live status")
 
 process.on('SIGINT', () => {
   console.log('Received SIGINT. Gracefully shutting down...');
-  // Add your cleanup logic here, e.g., closing database connections, saving data, etc.
-  bot.stop("SIGINT")
-  // Then exit the process
+  try {
+    bot.stop("SIGINT")
+  } catch {
+    
+  }
   process.exit(0);
 });
